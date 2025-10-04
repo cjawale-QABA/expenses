@@ -1,6 +1,6 @@
 import re
 from datetime import date
-import extracter
+import extractor
 from typing import List
 import csv
 
@@ -121,13 +121,13 @@ def extract_vendors_info(lines):
     return vendor_info
 
 def main():
-    pdf_text = extracter.extract_text_from_pdf("BEINV24000000797074.pdf")
+    pdf_text = extractor.extract_text_from_pdf("BEINV24000000797074.pdf")
     lines = split_lines(pdf_text)
     extracted_dates = extract_dates(lines)
     extracted_amounts = extract_total_amounts(lines)
     print("Extracted Dates:", extracted_dates)
     print("Extracted Amounts:", extracted_amounts)
-    # image_text = extracter.extract_text_from_image("12070.jpg")
+    # image_text = extractor.extract_text_from_image("12070.jpg")
     # lines = split_lines(image_text)
     # extracted_dates = extract_dates(lines)
     # extracted_amounts = extract_total_amounts(lines)
