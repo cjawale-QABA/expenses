@@ -1,6 +1,8 @@
 import re
 from datetime import date
 import extracter
+from typing import List
+import csv
 
 
 date_regex = r'(0?[1-9]|[12][0-9]|3[01])[/|-](0?[1-9]|[1][0-2])[/|-]([0-9]{4}|[0-9]{2})'
@@ -46,7 +48,8 @@ def extract_dates(lines):
             # Normalize year to 4 digits
             if len(year) == 2:
                 year = "20" + year
-            return date(int(year), int(month), int(day))
+            date_str = f"{day}-{month}-{year}"
+            return date_str
             
             
 def extract_total_amounts(lines):
@@ -60,15 +63,28 @@ def extract_total_amounts(lines):
                 return amount_str
 
 
-def extract_vendor_info(lines, vendors):
+def vendor_in_vendor_list(lines: List[str], vendors: List[str]):
     for line in lines:
+        # print(f"Checking line: {line}")
         for vendor in vendors:
-            if vendor.lower() in line.lower():
+            # print(f"Is vendor: {vendor} in line: {line}?")
+            if line.lower().__contains__(vendor.lower()):
+                # print(f"Matched vendor: {vendor} in line: {line}")
                 return vendor
-            else:
-                for abbr in company_abbreviations:
-                    if abbr in line:
-                        return line
+            # else:
+            #     for abbr in company_abbreviations:
+            #         if abbr in line:
+            #             print(f"Matched abbreviation: {abbr} in line: {line}")
+            #             return line
+    return None
+
+
+def check_abbreviations_in_lines(lines: List[str]):
+    for line in lines:
+        for abbr in company_abbreviations:
+            if abbr in line:
+                return line
+    return None
 
 
 def read_vendors_from_file(file_path):
@@ -85,9 +101,6 @@ def write_vendors_to_file(vendors, file_path):
     with open(file_path, 'w') as file:
         for vendor in vendors:
             file.write(vendor + '\n')
-            
-def check_vendor_exists(vendors, vendor):
-    return vendor in vendors
 
 
 def vendors_update(vendors, new_vendor):
@@ -97,6 +110,15 @@ def vendors_update(vendors, new_vendor):
         print(f"New vendor '{new_vendor}' added to the file.")
     else:
         print("Vendor already exists or not found.")
+        
+        
+def extract_vendors_info(lines):
+    vendors = read_vendors_from_file("Vendors - Vendors.csv")
+    vendor_info = vendor_in_vendor_list(lines, vendors)
+    if not vendor_info:
+        vendor_info = check_abbreviations_in_lines(lines)
+        vendors_update(vendors, vendor_info)
+    return vendor_info
 
 def main():
     pdf_text = extracter.extract_text_from_pdf("BEINV24000000797074.pdf")
@@ -111,13 +133,9 @@ def main():
     # extracted_amounts = extract_total_amounts(lines)
     # print("Extracted Dates:", extracted_dates)
     # print("Extracted Amounts:", extracted_amounts)
-    vendors = read_vendors_from_file("Vendors - Vendors.csv")
-    vendor_info = extract_vendor_info(lines, vendors)
-    if not check_vendor_exists(vendors, vendor_info):
-        vendors_update(vendors, vendor_info)
+    vendor_info = extract_vendors_info(lines)
     print("Vendor Info:", vendor_info)
         
 
 if __name__ == "__main__":
     main()
-    
