@@ -85,6 +85,9 @@ def write_vendors_to_file(vendors, file_path):
     with open(file_path, 'w') as file:
         for vendor in vendors:
             file.write(vendor + '\n')
+            
+def check_vendor_exists(vendors, vendor):
+    return vendor in vendors
 
 
 def vendors_update(vendors, new_vendor):
@@ -110,7 +113,8 @@ def main():
     # print("Extracted Amounts:", extracted_amounts)
     vendors = read_vendors_from_file("Vendors - Vendors.csv")
     vendor_info = extract_vendor_info(lines, vendors)
-    vendors_update(vendors, vendor_info)
+    if not check_vendor_exists(vendors, vendor_info):
+        vendors_update(vendors, vendor_info)
     print("Vendor Info:", vendor_info)
         
 
