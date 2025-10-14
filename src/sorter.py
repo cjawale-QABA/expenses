@@ -5,7 +5,8 @@ It creates folders for images, PDFs, and emails, and moves files into these fold
 """
 
 # Define directory paths and file extensions
-directory = '/Users/chaitalijawale/Downloads'  # set directory path
+Input_folder = 'Input'  # Input folder name
+directory = os.path.abspath(Input_folder)  # set directory path
 images = os.path.join(directory, 'images')  # set images subdirectory path
 pdfs = os.path.join(directory, 'pdfs')  # set pdfs subdirectory path
 emails = os.path.join(directory, 'emails')  # set emails subdirectory path
@@ -65,40 +66,24 @@ def move_files(src, dest):
         print("Check if the destination directory exists")
 
 
-def file_iterator(directory):
-    """
-    Iterate over files in the specified directory and move them to corresponding folders based on file types.
-
-    Args:
-        directory (str): The directory to scan for files.
-
-    Returns:
-        None
-    """
-    try:
-        for item in os.listdir(directory):  # iterate over items in the directory
-            item_path = os.path.join(directory, item)  # get full path of the item
-            if os.path.isfile(item_path):  # check if it's a file
-                if check_files(item, images_extensions):
-                    move_files(item_path, os.path.join(images, item))  # move image files
-                elif check_files(item, pdf_extensions):
-                    move_files(item_path, os.path.join(pdfs, item))  # move pdf files
-                elif check_files(item, email_extensions):
-                    move_files(item_path, os.path.join(emails, item))  # move email files
-                else:
-                    print(f"File {item} does not match any category")
-            else:
-                print(f"{item} is not a file")
-    except Exception as e:
-        print(f"Error iterating over files in {directory}: {e}")
-
-
 def main():
-    create_folders(images)  # create images folder
-    create_folders(pdfs)  # create pdfs folder
-    create_folders(emails)  # create emails folder
-    file_iterator(directory)  # start file iteration and organization
-
+    print(directory)  # print the directory path
+    # create_folders(images)  # create images folder
+    # create_folders(pdfs)  # create pdfs folder
+    # create_folders(emails)  # create emails folder
+    for file in os.listdir(directory):  # iterate over files in the directory
+        file_path = os.path.join(directory, file)  # get full file path
+        if os.path.isfile(file_path):  # check if it's a file
+            if check_files(file, images_extensions): # check if it's an image
+                move_files(file_path, os.path.join(images, file))  # move to images folder
+            elif check_files(file, pdf_extensions):  # check if it's a pdf
+                move_files(file_path, os.path.join(pdfs, file))  # move to pdfs folder
+            elif check_files(file, email_extensions):  # check if it's an email
+                move_files(file_path, os.path.join(emails, file))  # move to emails folder
+            else:
+                print(f"File {file} does not match any category")
+        print("All files processed")
+        print("File organization complete.")
 
 if __name__ == "__main__":
     main()  # run the main function

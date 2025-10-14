@@ -35,6 +35,7 @@ def split_lines(text):
     for line in text.splitlines():
         stripped_line = line.strip()
         if stripped_line:
+            # print(f"Line: {stripped_line}")
             extracted_lines.append(stripped_line)
     return extracted_lines
 
@@ -49,6 +50,7 @@ def extract_dates(lines):
             if len(year) == 2:
                 year = "20" + year
             date_str = f"{day}-{month}-{year}"
+            # return date(int(year), int(month), int(day))
             return date_str
             
             
@@ -121,13 +123,13 @@ def extract_vendors_info(lines):
     return vendor_info
 
 def main():
-    pdf_text = extractor.extract_text_from_pdf("BEINV24000000797074.pdf")
+    pdf_text = extracter.extract_text_from_pdf("BEINV24000000797074.pdf")
     lines = split_lines(pdf_text)
     extracted_dates = extract_dates(lines)
     extracted_amounts = extract_total_amounts(lines)
     print("Extracted Dates:", extracted_dates)
     print("Extracted Amounts:", extracted_amounts)
-    # image_text = extractor.extract_text_from_image("12070.jpg")
+    # image_text = extracter.extract_text_from_image("Input/1759751396753.jpg")
     # lines = split_lines(image_text)
     # extracted_dates = extract_dates(lines)
     # extracted_amounts = extract_total_amounts(lines)
@@ -139,3 +141,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

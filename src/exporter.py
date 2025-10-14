@@ -1,7 +1,6 @@
 import csv
-from Normalizer import create_transaction_record
-import extracter
-import parser_1
+import os
+import normalizer
 
 
 def read_csv(file_path):
@@ -11,32 +10,29 @@ def read_csv(file_path):
             print(row)
 
 def append_to_csv(file_path: str, data: dict):
-    with open(file_path, mode='a', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=data.keys())
+    fieldnames = data.keys()
+    print(fieldnames)
+    try:
+        with open(file_path, mode='a', newline='') as file:
+            # print("File opened in append mode.")
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow(data)
+    except FileNotFoundError:
+        create_csv(file_path, data)
+
+def create_csv(file_path: str, data: dict):
+    fieldnames = data.keys()
+    print(fieldnames)
+    with open(file_path, mode='w', newline='') as file:
+        print("File created.")
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
         writer.writerow(data)
 
-
-
 if __name__ == "__main__":
-    read_csv('expenses.csv')
-    file_name = "BEINV24000000797074.pdf"
-    pdf_text = extracter.extract_text_from_pdf(file_name)
-    lines = parser_1.split_lines(pdf_text)
-    extracted_dates = parser_1.extract_dates(lines)
-    extracted_amounts = parser_1.extract_total_amounts(lines)
-    vendors = parser_1.read_vendors_from_file("Vendors - Vendors.csv")
-    vendor_info = parser_1.extract_vendor_info(lines, vendors)
-    parser_1.vendors_update(vendors, vendor_info)
-    print("Vendor Info:", vendor_info)
-    
-    if extracted_dates and extracted_amounts:
-        transaction_record = create_transaction_record(
-            file_name,
-            extracted_dates[0],
-            extracted_amounts[0],
-            vendor_info
-        )
-        print("Transaction Record:", transaction_record)
+    transaction_record = normalizer.normalizer()
+    output_file = 'expenses.csv'
+    if os.path.isfile(output_file):
+        append_to_csv(output_file, transaction_record)
     else:
-        print("Could not extract necessary information.")
-    append_to_csv('expenses.csv', transaction_record.values())
+        create_csv(output_file, transaction_record)
