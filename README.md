@@ -64,7 +64,8 @@ It extracts, normalizes, and exports structured expense data for better tracking
 ```python
 import project
 
-This will trigger the end-to-end pipeline 1. Extract → 2. Parse → 3. Normalize → 4. Sort → 5. Export
+# This will trigger the end-to-end pipeline 
+# 1. Extract → 2. Parse → 3. Normalize → 4. Sort → 5. Export
 
 project.main()
 
