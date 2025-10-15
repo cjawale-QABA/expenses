@@ -8,7 +8,7 @@ import csv
 """Regex patterns and keywords for identifying dates and total amounts in text."""
 
 date_regex = r'(0?[1-9]|[12][0-9]|3[01])[/|-](0?[1-9]|[1][0-2])[/|-]([0-9]{4}|[0-9]{2})'
-total_amount_regex = r'(\d{1,3}(?:\.\d{3})*,\d{2})'
+total_amount_regex = r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})'
 total_keywords = ["Totaal", "Total", "Total Amount", "Te betalen", "Som", "Bedrag", "A payé", "Montant", "A payer", "Cash", "Invoice Total", "Factuurbedrag"]
 
 """List of common company abbreviations in Belgium to help identify vendor names."""
@@ -68,7 +68,7 @@ def extract_total_amounts(lines):
             if match:
                 amount_str = match.group(0)
                 # Remove currency symbols and commas
-                amount_str = re.sub(r'[\$€₹.]', '', amount_str)
+                amount_str = re.sub(r'[\$€₹]', '', amount_str)
                 return amount_str
 
 
@@ -136,7 +136,7 @@ def extract_vendors_info(lines):
     return vendor_info
 
 def main():
-    pdf_text = extractor.extract_text_from_pdf("input/BEINV24000000797074.pdf")
+    pdf_text = extractor.extract_text_from_pdf("input/Ticket20250401004820590073.pdf")
     lines = split_lines(pdf_text)
     extracted_dates = extract_dates(lines)
     extracted_amounts = extract_total_amounts(lines)
