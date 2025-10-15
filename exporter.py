@@ -14,7 +14,7 @@ def read_csv(file_path):
 def append_to_csv(file_path: str, data: dict):
     """Append a transaction record to an existing CSV file. Create the file if it doesn't exist."""
     fieldnames = data.keys()
-    print(fieldnames)
+    # print(fieldnames)
     try:
         with open(file_path, mode='a', newline='') as file:
             # print("File opened in append mode.")
@@ -26,7 +26,7 @@ def append_to_csv(file_path: str, data: dict):
 def create_csv(file_path: str, data: dict):
     """Create a new CSV file and write the transaction record to it."""
     fieldnames = data.keys()
-    print(fieldnames)
+    # print(fieldnames)
     with open(file_path, mode='w', newline='') as file:
         print("File created.")
         writer = csv.DictWriter(file, fieldnames=fieldnames)

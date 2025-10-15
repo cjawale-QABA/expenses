@@ -30,7 +30,6 @@ def extract_file_text(file_path: str) -> str:
         print(f"Processing email file: {file_path}")
         return extractor.extract_text_from_email(file_path)
     else:
-        print(f"extract_file_text File {file_name} does not match any category")
         return ""
 
 
@@ -66,21 +65,23 @@ def normalizing_info(extracted_info: dict, file_name: str) -> dict:
             extracted_amounts,
             vendor_info
         )
+        print('Transaction Record:', transaction_record)
         return transaction_record
     else:
         print("Could not extract necessary information.")
         return {}
-    
-    
-def file_processing(file_path: str):
+
+
+def file_processing(file_path: str, output_file: str):
     """Process a single file: extract text, parse, normalize, export, and move the file."""
     file_name = os.path.basename(file_path)
+    
     filetext = extract_file_text(file_path)
     # Further processing of the extracted text
     extracted_info = parsing_text(filetext)
     transaction_record = normalizing_info(extracted_info, file_name)
     if transaction_record:
-        output_file = 'expenses.csv'
+        
         if os.path.isfile(output_file):
             exporter.append_to_csv(output_file, transaction_record)
         else:
@@ -88,10 +89,12 @@ def file_processing(file_path: str):
         # Move the original file to the 'processed' folder
         sorter.create_folders('processed')
         move_dest = os.path.join('processed', file_name)
-        print(f"Moving file {file_path} to {move_dest}")
+        # print(f"Moving file {file_path} to {move_dest}")
         sorter.move_files(file_path, move_dest)
+        return output_file
     else:
         print(f"Skipping file {file_name} due to incomplete information.")
+        return None
 
 
 
@@ -99,15 +102,19 @@ def main():
     """Main function to process all files in the input directory."""
     allowed_extensions = images_extensions + pdf_extensions + email_extensions # allowed file extensions
     directory = 'input' # directory to organize
+    output_file = 'output/expenses.csv' # output CSV file path
     for file in os.listdir(directory):  # iterate over files in the directory
+        if file == '.DS_Store' or file == 'Vendors - Vendors.csv':  # skip .DS_Store files
+            continue
         file_path = os.path.join(directory, file)  # get full file path
         if os.path.isfile(file_path):  # check if it's a file
             # print(sorter.check_files(file, allowed_extensions))
             if sorter.check_files(file, allowed_extensions): # check if it's an image
-                file_processing(file_path) # process the file
+                file_processing(file_path, output_file) # process the file
             else:
                 print(f"File {file} does not match any category")
     print("All files processed")
+    print("check the output folder for expenses.csv")
     print("File processing complete.")
         
         

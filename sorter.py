@@ -22,7 +22,8 @@ def create_folders(folder_name):
         folder_name (str): The name of the folder to create.
     """    
     if os.path.exists(folder_name):
-        print(f"Directory {folder_name} exists")
+        pass
+        # print(f"Directory {folder_name} exists")
     else:
         try:
             os.mkdir(folder_name)  # create directory if it doesn't exist

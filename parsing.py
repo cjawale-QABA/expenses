@@ -78,9 +78,11 @@ def vendor_in_vendor_list(lines: List[str], vendors: List[str]):
         # print(f"Checking line: {line}")
         for vendor in vendors:
             # print(f"Is vendor: {vendor} in line: {line}?")
-            if line.lower().__contains__(vendor.lower()):
-                # print(f"Matched vendor: {vendor} in line: {line}")
+            if vendor.lower() in line.lower():
                 return vendor
+            # if line.lower().__contains__(vendor.lower()):
+                # print(f"Matched vendor: {vendor} in line: {line}")
+                # return vendor
             # else:
             #     for abbr in company_abbreviations:
             #         if abbr in line:
@@ -136,7 +138,7 @@ def extract_vendors_info(lines):
     return vendor_info
 
 def main():
-    pdf_text = extractor.extract_text_from_pdf("input/Ticket20250401004820590073.pdf")
+    pdf_text = extractor.extract_text_from_pdf("input/BEINV22000000485465.pdf")
     lines = split_lines(pdf_text)
     extracted_dates = extract_dates(lines)
     extracted_amounts = extract_total_amounts(lines)

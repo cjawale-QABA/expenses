@@ -1,7 +1,7 @@
 import pytest
 import os
 from unittest.mock import patch, MagicMock
-import project
+import project as project
 
 
 # ---------- extract_file_text ----------
