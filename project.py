@@ -8,13 +8,15 @@ from datetime import date
 from typing import List
 from dataclasses import dataclass
 
-
-
+"""Main module to orchestrate file processing, including extraction, parsing, normalization, exporting, and sorting."""
+""" Define file type categories based on extensions."""
+# Define directory paths and file extensions
 images_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff')  # image file extensions
 pdf_extensions = ('.pdf',)  # pdf file extensions
 email_extensions = ('.eml', '.msg')  # email file extensions    
 
 def extract_file_text(file_path: str) -> str:
+    """Extract text from a file based on its type (image, PDF, email)."""
     file_name = os.path.basename(file_path)
     extension_file_name = file_name.lower().split('.')[-1]
     # print(extension_file_name)
@@ -33,6 +35,7 @@ def extract_file_text(file_path: str) -> str:
 
 
 def parsing_text(filetext: str) -> dict:
+    """Parse extracted text to retrieve dates, amounts, and vendor information."""
     # Further processing of the extracted text
     lines = parser.split_lines(filetext)
     extracted_dates = parser.extract_dates(lines)
@@ -48,6 +51,7 @@ def parsing_text(filetext: str) -> dict:
 
 
 def normalizing_info(extracted_info: dict, file_name: str) -> dict:
+    """Normalize parsed information into a structured transaction record."""
     extracted_dates = extracted_info.get("dates")
     # print("Extracted Dates:", extracted_dates)
     extracted_amounts = extracted_info.get("amounts")
@@ -69,6 +73,7 @@ def normalizing_info(extracted_info: dict, file_name: str) -> dict:
     
     
 def file_processing(file_path: str):
+    """Process a single file: extract text, parse, normalize, export, and move the file."""
     file_name = os.path.basename(file_path)
     filetext = extract_file_text(file_path)
     # Further processing of the extracted text
@@ -91,20 +96,19 @@ def file_processing(file_path: str):
 
 
 def main():
-    allowed_extensions = images_extensions + pdf_extensions + email_extensions
-    directory = 'input'
-    # print(directory)  # print the directory path
-    # print(allowed_extensions)  # print allowed extensions
+    """Main function to process all files in the input directory."""
+    allowed_extensions = images_extensions + pdf_extensions + email_extensions # allowed file extensions
+    directory = 'input' # directory to organize
     for file in os.listdir(directory):  # iterate over files in the directory
         file_path = os.path.join(directory, file)  # get full file path
         if os.path.isfile(file_path):  # check if it's a file
             # print(sorter.check_files(file, allowed_extensions))
             if sorter.check_files(file, allowed_extensions): # check if it's an image
-                file_processing(file_path)
+                file_processing(file_path) # process the file
             else:
                 print(f"File {file} does not match any category")
-    # print("All files processed")
-    # print("File organization complete.")
+    print("All files processed")
+    print("File processing complete.")
         
         
 if __name__ == "__main__":

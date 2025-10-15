@@ -2,8 +2,10 @@ import pdfplumber
 from PIL import Image
 import pytesseract
 from pdf2image import convert_from_path
+"""Module for extracting text from PDF and image files."""
 
 def extract_text_from_pdf(pdf_path):
+    """Extract text from a PDF file. If the PDF is scanned (image-based), use OCR to extract text."""   
     with pdfplumber.open(pdf_path) as pdf:
         full_text = ""
         for page in pdf.pages:
@@ -17,6 +19,7 @@ def extract_text_from_pdf(pdf_path):
 
 
 def extract_text_from_image(image_path):
+    """Extract text from an image file using OCR."""
     image = Image.open(image_path)
     text = pytesseract.image_to_string(image)
     return text

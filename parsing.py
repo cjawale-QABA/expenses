@@ -3,11 +3,15 @@ from datetime import date
 import extractor
 from typing import List
 import csv
+"""Module for parsing text to extract dates, amounts, and vendor information."""
 
+"""Regex patterns and keywords for identifying dates and total amounts in text."""
 
 date_regex = r'(0?[1-9]|[12][0-9]|3[01])[/|-](0?[1-9]|[1][0-2])[/|-]([0-9]{4}|[0-9]{2})'
 total_amount_regex = r'(\d{1,3}(?:\.\d{3})*,\d{2})'
 total_keywords = ["Totaal", "Total", "Total Amount", "Te betalen", "Som", "Bedrag", "A payé", "Montant", "A payer", "Cash", "Invoice Total", "Factuurbedrag"]
+
+"""List of common company abbreviations in Belgium to help identify vendor names."""
 
 company_abbreviations = [
     # Current forms
@@ -30,6 +34,7 @@ company_abbreviations = [
 
 
 def split_lines(text):
+    """Split text into non-empty, stripped lines."""
     # text = text.replace('\r\n', '\n').replace('\r', '\n')
     extracted_lines = []
     for line in text.splitlines():
@@ -40,6 +45,7 @@ def split_lines(text):
     return extracted_lines
 
 def extract_dates(lines):
+    """Extract the first date found in the text lines."""
     for line in lines:
         match = re.search(date_regex, line)
         if match:
@@ -55,6 +61,7 @@ def extract_dates(lines):
             
             
 def extract_total_amounts(lines):
+    """Extract the total amount from the text lines based on keywords."""
     for line in lines:
         if any(keyword.lower() in line.lower() for keyword in total_keywords):
             match = re.search(total_amount_regex, line)
@@ -66,6 +73,7 @@ def extract_total_amounts(lines):
 
 
 def vendor_in_vendor_list(lines: List[str], vendors: List[str]):
+    """Check if any vendor from the list is mentioned in the text lines."""
     for line in lines:
         # print(f"Checking line: {line}")
         for vendor in vendors:
@@ -82,6 +90,7 @@ def vendor_in_vendor_list(lines: List[str], vendors: List[str]):
 
 
 def check_abbreviations_in_lines(lines: List[str]):
+    """Check for company abbreviations in the text lines to identify vendor names."""
     for line in lines:
         for abbr in company_abbreviations:
             if abbr in line:
@@ -90,6 +99,7 @@ def check_abbreviations_in_lines(lines: List[str]):
 
 
 def read_vendors_from_file(file_path):
+    """Read vendor names from a CSV file into a list."""
     vendors = []
     with open(file_path, 'r') as file:
         for line in file:
@@ -100,12 +110,14 @@ def read_vendors_from_file(file_path):
 
 
 def write_vendors_to_file(vendors, file_path):
+    """Write the list of vendor names to a CSV file."""
     with open(file_path, 'w') as file:
         for vendor in vendors:
             file.write(vendor + '\n')
 
 
 def vendors_update(vendors, new_vendor):
+    """Add a new vendor to the list and update the CSV file if it's not already present."""
     if new_vendor and new_vendor not in vendors:
         vendors.append(new_vendor)
         write_vendors_to_file(vendors, "Vendors - Vendors.csv")
@@ -115,6 +127,7 @@ def vendors_update(vendors, new_vendor):
         
         
 def extract_vendors_info(lines):
+    """Extract vendor information from text lines using a predefined vendor list and abbreviations."""
     vendors = read_vendors_from_file("input/Vendors - Vendors.csv")
     vendor_info = vendor_in_vendor_list(lines, vendors)
     if not vendor_info:

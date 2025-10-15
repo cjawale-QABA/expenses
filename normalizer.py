@@ -1,8 +1,11 @@
-import parser
+import parsing as parser
 import extractor
 from datetime import date
 
+"""Module for normalizing extracted information into structured records."""
+
 def normalize_amount(amount_str: str) -> float:
+    """Convert amount string to a float, handling commas and currency symbols."""
     try:
         # print(f"Normalizing amount: {amount_str}")
         amount_str = amount_str.replace(",", ".")
@@ -11,6 +14,7 @@ def normalize_amount(amount_str: str) -> float:
         return 0.0
 
 def convert_to_date(date_str: str) -> date:
+    """Convert a date string in 'DD-MM-YYYY' format to a date object. Defaults to today's date on failure."""
     day, month, year = date_str.split('-')
     try:
         return date(int(year), int(month), int(day)).strftime("%d-%m-%Y")
@@ -19,6 +23,7 @@ def convert_to_date(date_str: str) -> date:
         return date.today()
 
 def create_transaction_record(file_name: str, date_str: str, amount_str: str, vendor: str) -> dict:
+    """Create a structured transaction record from extracted data."""
     return {
         "file_name": file_name,
         "date": convert_to_date(date_str),
@@ -27,6 +32,7 @@ def create_transaction_record(file_name: str, date_str: str, amount_str: str, ve
     }
 
 def Normalizer():
+    """Main function to demonstrate normalization process."""
     file_name = "BEINV24000000797074.pdf"
     pdf_text = extractor.extract_text_from_pdf(file_name)
     lines = parser.split_lines(pdf_text)
