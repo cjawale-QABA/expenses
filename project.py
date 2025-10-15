@@ -1,6 +1,6 @@
 import sorter
 import normalizer
-import parser
+import parsing as parser
 import extractor
 import exporter
 import os
@@ -14,27 +14,45 @@ images_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff')  # image 
 pdf_extensions = ('.pdf',)  # pdf file extensions
 email_extensions = ('.eml', '.msg')  # email file extensions    
 
-def file_processing(file_path: str):
+def extract_file_text(file_path: str) -> str:
     file_name = os.path.basename(file_path)
     extension_file_name = file_name.lower().split('.')[-1]
     # print(extension_file_name)
     if images_extensions.__contains__(f'.{extension_file_name}'):
         print(f"Processing image file: {file_path}")
-        filetext = extractor.extract_text_from_image(file_path)
+        return extractor.extract_text_from_image(file_path)
     elif pdf_extensions.__contains__(f'.{extension_file_name}'):  
         print(f"Processing PDF file: {file_path}")
-        filetext = extractor.extract_text_from_pdf(file_path)
+        return extractor.extract_text_from_pdf(file_path)
     elif email_extensions.__contains__(f'.{extension_file_name}'): 
         print(f"Processing email file: {file_path}")
-        filetext = extractor.extract_text_from_email(file_path)
+        return extractor.extract_text_from_email(file_path)
     else:
-        print(f"file_processing File {file_name} does not match any category")
+        print(f"extract_file_text File {file_name} does not match any category")
+        return ""
+
+
+def parsing_text(filetext: str) -> dict:
     # Further processing of the extracted text
     lines = parser.split_lines(filetext)
     extracted_dates = parser.extract_dates(lines)
     # print("Extracted Dates:", extracted_dates)
     extracted_amounts = parser.extract_total_amounts(lines)
     vendor_info = parser.extract_vendors_info(lines)
+    # print("Vendor Info:", vendor_info)
+    return {
+        "dates": extracted_dates,
+        "amounts": extracted_amounts,
+        "vendor": vendor_info
+    }
+
+
+def normalizing_info(extracted_info: dict, file_name: str) -> dict:
+    extracted_dates = extracted_info.get("dates")
+    # print("Extracted Dates:", extracted_dates)
+    extracted_amounts = extracted_info.get("amounts")
+    # print("Extracted Amounts:", extracted_amounts)
+    vendor_info = extracted_info.get("vendor")
     # print("Vendor Info:", vendor_info)
     
     if extracted_dates and extracted_amounts:
@@ -44,23 +62,37 @@ def file_processing(file_path: str):
             extracted_amounts,
             vendor_info
         )
-        # print(transaction_record)
+        return transaction_record
+    else:
+        print("Could not extract necessary information.")
+        return {}
+    
+    
+def file_processing(file_path: str):
+    file_name = os.path.basename(file_path)
+    filetext = extract_file_text(file_path)
+    # Further processing of the extracted text
+    extracted_info = parsing_text(filetext)
+    transaction_record = normalizing_info(extracted_info, file_name)
+    if transaction_record:
         output_file = 'expenses.csv'
         if os.path.isfile(output_file):
             exporter.append_to_csv(output_file, transaction_record)
         else:
             exporter.create_csv(output_file, transaction_record)
-        sorter.create_folders('Processed')
-        move_dest = os.path.join('Processed', file_name)
+        # Move the original file to the 'processed' folder
+        sorter.create_folders('processed')
+        move_dest = os.path.join('processed', file_name)
         print(f"Moving file {file_path} to {move_dest}")
         sorter.move_files(file_path, move_dest)
     else:
-        print("Could not extract necessary information.")
+        print(f"Skipping file {file_name} due to incomplete information.")
+
 
 
 def main():
     allowed_extensions = images_extensions + pdf_extensions + email_extensions
-    directory = 'Input'
+    directory = 'input'
     # print(directory)  # print the directory path
     # print(allowed_extensions)  # print allowed extensions
     for file in os.listdir(directory):  # iterate over files in the directory

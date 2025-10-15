@@ -115,7 +115,7 @@ def vendors_update(vendors, new_vendor):
         
         
 def extract_vendors_info(lines):
-    vendors = read_vendors_from_file("Vendors - Vendors.csv")
+    vendors = read_vendors_from_file("input/Vendors - Vendors.csv")
     vendor_info = vendor_in_vendor_list(lines, vendors)
     if not vendor_info:
         vendor_info = check_abbreviations_in_lines(lines)
@@ -123,13 +123,13 @@ def extract_vendors_info(lines):
     return vendor_info
 
 def main():
-    pdf_text = extracter.extract_text_from_pdf("BEINV24000000797074.pdf")
+    pdf_text = extractor.extract_text_from_pdf("input/BEINV24000000797074.pdf")
     lines = split_lines(pdf_text)
     extracted_dates = extract_dates(lines)
     extracted_amounts = extract_total_amounts(lines)
     print("Extracted Dates:", extracted_dates)
     print("Extracted Amounts:", extracted_amounts)
-    # image_text = extracter.extract_text_from_image("Input/1759751396753.jpg")
+    # image_text = extracter.extract_text_from_image("input/1759751396753.jpg")
     # lines = split_lines(image_text)
     # extracted_dates = extract_dates(lines)
     # extracted_amounts = extract_total_amounts(lines)

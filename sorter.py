@@ -5,8 +5,8 @@ It creates folders for images, PDFs, and emails, and moves files into these fold
 """
 
 # Define directory paths and file extensions
-Input_folder = 'Input'  # Input folder name
-directory = os.path.abspath(Input_folder)  # set directory path
+input_folder = 'input'  # Input folder name
+directory = os.path.abspath(input_folder)  # set directory path
 images = os.path.join(directory, 'images')  # set images subdirectory path
 pdfs = os.path.join(directory, 'pdfs')  # set pdfs subdirectory path
 emails = os.path.join(directory, 'emails')  # set emails subdirectory path
