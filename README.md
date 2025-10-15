@@ -7,6 +7,7 @@ It extracts, normalizes, and exports structured expense data for better tracking
 
 ## 📁 Project Structure
 
+```bash
 .
 ├── exporter.py
 ├── extractor.py
@@ -17,6 +18,7 @@ It extracts, normalizes, and exports structured expense data for better tracking
 ├── test_project.py
 ├── requirements.txt
 └── README.md
+```
 
 | File | Description |
 |------|--------------|
@@ -33,9 +35,11 @@ It extracts, normalizes, and exports structured expense data for better tracking
 ## ⚙️ Setup & Installation
 
 1. **Clone the repository**
-   bash
+
+   ```bash
    git clone <https://github.com/cjawale-QABA/expenses.git>
    cd expenses
+   ```
 
 2. **Create and activate a virtual environment**
 
@@ -57,15 +61,18 @@ It extracts, normalizes, and exports structured expense data for better tracking
 
 ### Option 1 — Run the entire pipeline python
 
+```python
 import project
 
 This will trigger the end-to-end pipeline 1. Extract → 2. Parse → 3. Normalize → 4. Sort → 5. Export
 
 project.main()
 
-```  ### Option 2 — Use individual modules
 ```
 
+### Option 2 — Use individual modules
+
+```python
 from extractor import extract
 from parsing import parse
 from normalizer import normalize
