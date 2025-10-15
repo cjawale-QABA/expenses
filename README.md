@@ -38,14 +38,18 @@ It extracts, normalizes, and exports structured expense data for better tracking
    cd expenses
 
 2. **Create and activate a virtual environment**
-   bash
+
+   ``` bash
    python3 -m venv venv
    source venv/bin/activate     # On macOS/Linux # or
    venv\Scripts\activate        # On Windows
+   ```
 
 3. **Install dependencies**
-   bash
+
+   ``` bash
    pip install -r requirements.txt
+   ```
 
 ---
 
@@ -60,7 +64,8 @@ This will trigger the end-to-end pipeline 1. Extract → 2. Parse → 3. Normali
 project.main()
 
 ```  ### Option 2 — Use individual modules
-``` python
+```
+
 from extractor import extract
 from parsing import parse
 from normalizer import normalize
