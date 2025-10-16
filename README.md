@@ -1,5 +1,6 @@
-# 💰 Expenses — Python Expense Management & Statement Parser
-
+# 💰 Expenses Data Extractor.
+#### Video Demo:  https://youtu.be/oSw7sIDKoUM
+#### Description:
 A Python-based automation project for managing and parsing expense data from receipts, bank statements, and other financial sources.  
 It extracts, normalizes, and exports structured expense data for better tracking and analysis.
 
